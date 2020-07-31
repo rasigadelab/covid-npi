@@ -113,8 +113,6 @@ fisher.test(table(kmat[,1], kmat[,2]))
 
 cor(kmat[,1], kmat[,2])
 
-stop()
-
 #########################################################
 # FULL MULTIVARIATE MODEL
 
@@ -203,7 +201,6 @@ if(rebuild) {
   
   stopCluster(cl)
 }
-
 
 model_list <- list()
 

@@ -193,8 +193,6 @@ sir_summary <- function(sir) {
 # Add to main table
 itv_timing
 
-# stop()
-
 cf <- "coef"
 timing_col <- "median"
 
@@ -271,20 +269,10 @@ xlclipboard(itv_sir_table)
 ########################################################
 # Table S2 - Combinations
 # Extract coefficient correlation matrix to estimate standard errors
+# Variance of sum is the sum of variances and covariances
 
 m <- fixef(cxme_full_id)
 v <- vcov(cxme_full_id)
-
-# Variance of sum is the sum of variances and covariances
-i <- "itv_school"
-j <- "itv_gatherings"
-
-se <- sqrt(v[i,i] + v[j,j] + 2*v[i,j])
-
-cfint <- c(coef = m[i] + m[j], lo = m[i] + m[j] - 1.96 * se, hi = m[i] + m[j] + 1.96 * se)
-100*(exp(cfint) - 1)
-
-3 + cfint * 12 / 2
 
 names(m)
 sumrange <- c(1:9)
@@ -317,20 +305,21 @@ f <- function(sumrange, perc = TRUE) {
 options(scipen = 1)
 t(sapply(1:9, function(n) f(1:n)))
 
-stop()
 ########################################################################
-# Implications of home containment
+# Implicit restrictions of home containment
+# Compute the marginal effect of home containment + implicit restrictions
+
 itv_labels
 f(c(4,5,7,9), perc = TRUE)
 lockdown_coef <- f(c(4,5,7,9), perc = FALSE)
-
 
 sapply(1:3, function(i) {
   sir_lockdown <- getSIR(itv_timing$median[9], as.double(lockdown_coef[i]), 12, baseline)
   max(sir_lockdown$I)
 })
 
-# Table 2
+########################################################################
+# Table 2 - Probabilities of reducing Rt below 1 using combined interventions
 {
   stoptable <- data.table(t(sapply(1:9, function(n) f(1:n))))
   
@@ -349,9 +338,8 @@ sapply(1:3, function(i) {
 
 xlclipboard(stoptable)
 
-# stop()
-
-# Table S3
+########################################################################
+# Table S3 - Probabilities of reducing Rt below 1 using individual interventions
 {
   stoptable <- data.table(t(sapply(1:9, function(n) f(n))))
   
@@ -370,24 +358,9 @@ xlclipboard(stoptable)
 
 xlclipboard(stoptable)
 
-t(sapply(1:9, function(n) f(n)))
-
-f(c(3, 5))
-
-
-csum <- sum(m[sumrange])
-se <- sqrt(sum(v[sumrange, sumrange]))
-
-cfint <- c(coef = csum, lo = csum - 1.96 * se, hi = csum + 1.96 * se)
-100*(exp(cfint) - 1)
-
-# Probability to stop with R0 = 3
-R0 <- 3
-
-pnorm(0, log(3) + csum, se)
-
 ############################################################
 # CUMULATIVE SIR MODELS
+# We need different ODE functions to use several change points
 
 # Logistic growth model to illustrate cumulative HR results
 loggrowth_cp <- function(Time, State, Pars, breakpoints, coefs) {
@@ -418,7 +391,7 @@ loggrowth_cp <- function(Time, State, Pars, breakpoints, coefs) {
   })
 }
 
-# SIR result with interventions with change points
+# SIR result with several interventions and change points
 getSIR_cp <- function(changepoints, coefs, length = 4, baseline) {
   suppressWarnings(with(baseline, {
     pars <- c(
@@ -466,6 +439,9 @@ f <- function(sumrange) {
 cumcoefs <- t(sapply(1:9, function(n) f(1:n)))
 
 
+############################################################
+# CUMULATIVE SIR MODELS - Figure 3
+
 ramp <- colorRampPalette(c("darkgreen", "orange", "darkred"), alpha = 0.5)(nrow(itv_timing))
 
 svgf("fig/cumulative_npi_SIR_curve", 5, 3.5)
@@ -487,16 +463,8 @@ svgf("fig/cumulative_npi_SIR_curve", 5, 3.5)
   for(i in 1:nrow(itv_timing)) {
     sir_med <- getSIR_cp(itv_timing$median[1:i], cumcoefs[1:i,1], sir_len, baseline)
     lines(sir_med$time, sir_med$I * scaling, lwd = 2, col = ramp[i])
-    
-    # Quantile lines
-    # for(qt in quantile_lines) {
-    #   qcoef <- qnorm(qt, itv_timing$coef[i], itv_timing$coef_se[i])
-    #   sir <- getSIR(itv_timing$median[i], qcoef, sir_len, baseline)
-    #   lines(sir$time, sir$I * scaling, lwd = 3, col = quantile_col)
-    # }
-    
   }
-  # rect(0, 125, sir_len, 3.2e5 * scaling, col = rgb(1,1,1,0.8), border = NA)
+  
   for(i in 1:nrow(itv_timing)) {
     text(sir_len, 3.2e5 * scaling - i*30, itv_labels[i], adj = 1, col = ramp[i])
   }
