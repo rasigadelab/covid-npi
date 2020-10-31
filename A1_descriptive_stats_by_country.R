@@ -12,7 +12,7 @@
 
 #########################################################
 # GENERATE SUPPLEMENTARY TABLE WITH COUNTRY INFORMATION
-
+ 
 source("helpers.R")
 
 print(load("rdata/nextstrain_tree_200512.Rdata"))

@@ -1,9 +1,11 @@
 # covid-npi
 Analysis code for:
 
-**SARS-CoV-2 phylodynamics differentiates the effectiveness of non-pharmaceutical interventions**
+**A viral perspective on worldwide non-pharmaceutical interventions against COVID-19**
 
 Jean-Philippe Rasigade, Anaïs Barray, Julie Teresa Shapiro, Charlène Coquisart, Yoann Vigouroux, Antonin Bal, Grégory Destras, Philippe Vanhems, Bruno Lina, Laurence Josset, Thierry Wirth.
+
+[medRXiv preprint manuscript](https://www.medrxiv.org/content/10.1101/2020.08.24.20180927v2)
 
 ## Requirements
 R software (tested on Windows 10 with v3.6.1).

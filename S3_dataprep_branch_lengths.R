@@ -12,7 +12,7 @@
 
 #########################################################################
 # BUILD TABLE OF BRANCH LENGTHS AND COUNTRIES
-
+ 
 source("helpers.R")
 load("rdata/country_baseline_200512.Rdata")
 load("rdata/nextstrain_tree_200512.Rdata")

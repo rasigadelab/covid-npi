@@ -13,7 +13,7 @@
 #####################################################################
 # FLOWCHART
 # Summarize inclusion/exclusion of data
-
+ 
 source("helpers.R")
 
 print(load("rdata/nextstrain_tree_200512.Rdata"))

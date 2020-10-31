@@ -12,7 +12,7 @@
 
 #########################################################
 # EPIDEMIOLOGICAL SIR MODELS
-
+ 
 library(deSolve)
 
 source("helpers.R")
